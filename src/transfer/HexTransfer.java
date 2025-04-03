@@ -10,10 +10,8 @@ public class HexTransfer implements TransferHex {
 
     private static final Map<Integer, String> HEX_MAP = new HashMap<>();
 
-
     private HexTransfer() {
     }
-
 
     public static HexTransfer getInstance() {
         if (hexTransfer == null) {
@@ -33,9 +31,13 @@ public class HexTransfer implements TransferHex {
         if (c) {
             int d = DigitTransfer.getDigitValue(digit);
 
+            // 입력이 0
+            if (d == 0) return String.valueOf(d);
+
             while (d > 0) {
-                // 현재 r을 d로 나눈 나머지 구하기.
+                // 현재 d을 HEX 나눈 나머지 구하기.
                 int r = d % HEX;
+
                 String n = HEX_MAP.get(r);
 
                 if (n == null) {
@@ -58,15 +60,23 @@ public class HexTransfer implements TransferHex {
 
     @Override
     public String TransferBinaryToHex(String binary) {
+        StringBuilder sb = new StringBuilder();
         boolean c = BinaryTransfer.checkBinary(binary);
 
-        //TODO 2진수 -> 16진수
         if (c) {
+            // 길이가 4 이상
+            if (binary.length() > 3) {
+                String[] bytes = cutByteStr(binary);
 
+                for (String b : bytes) {
+                    sb.append(exchangeHex(b));
+                }
+
+                return reverse(String.valueOf(sb));
+            }
         }
 
-
-        return "";
+        return exchangeHex(binary);
     }
 
     @Override
@@ -80,6 +90,39 @@ public class HexTransfer implements TransferHex {
         return result.toString();
     }
 
+    // 4비트씩 자르기
+    private String[] cutByteStr(String longBinary) {
+        StringBuilder sb = new StringBuilder();
+
+        // 바이너리 뒤에서 부터 자르기
+        int cnt = 0;
+        for (int i = longBinary.length() - 1; i >= 0; i--) {
+            sb.append(longBinary.charAt(i));
+            cnt += 1;
+
+            if (cnt == 4) {
+                sb.append(" ");
+                cnt = 0;
+            }
+        }
+
+        return String.valueOf(sb).split(" ");
+    }
+
+    private String exchangeHex(String binary) {
+        int r = 1;
+        int d = 0;
+        for (int i = 0; i < binary.length(); i++) {
+            d += (binary.charAt(i) - 48) * r;
+            r *= 2;
+        }
+
+        if (d >= 10) {
+            return HEX_MAP.get(d);
+        }
+
+        return String.valueOf(d);
+    }
 
     private static void hexMapSetter() {
         HEX_MAP.put(10, "A");

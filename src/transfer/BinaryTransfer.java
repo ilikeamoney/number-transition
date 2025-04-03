@@ -20,11 +20,14 @@ public class BinaryTransfer implements TransferBinary {
         boolean c = true;
 
         for (int i = 0; i < binary.length(); i++) {
-            if (binary.charAt(i) - 48 != 0 || binary.charAt(i) - 48 != 1) {
+            // A ~ F
+            if (binary.charAt(i) > 64 && 71 > binary.charAt(i)) {
+                return !c;
+                // 2 ~ 9
+            } else if (binary.charAt(i) - 48 > 1 && 10 > binary.charAt(i)) {
                 return !c;
             }
         }
-
         return c;
     }
 }

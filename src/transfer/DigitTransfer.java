@@ -17,14 +17,15 @@ public class DigitTransfer implements TransferDigit {
     }
 
     public static boolean checkDigit(String digit) {
-        boolean c = false;
+        boolean c = true;
 
         for (int i = 0; i < digit.length(); i++) {
-            if (digit.charAt(i) >= 48 && 57 >= digit.charAt(i)) {
-                c = true;
-            } else {
-                c = false;
-                return c;
+            //9 보다 크다면
+            if (digit.charAt(i) - 48 > 9) {
+                return !c;
+                // 0 보다 작다면
+            } else if (digit.charAt(i) - 48 < 0) {
+                return !c;
             }
         }
 
@@ -34,15 +35,17 @@ public class DigitTransfer implements TransferDigit {
     public static int getDigitValue(String digit) {
         int d = 0;
 
-        // 자릿수가 1개라면
+        // 자릿수 1개
         if (digit.length() == 1) {
-            return d = digit.charAt(0) - 48;
+            return digit.charAt(0) - 48;
         }
 
-        for (int i = 0; i < digit.length(); i++) {
+        for (int i = 0; i < digit.length() - 1; i++) {
             d += digit.charAt(i) - 48;
             d *= 10;
         }
+        // 1의 자릿수 더하기
+        d += digit.charAt(digit.length() - 1) - 48;
 
         return d;
     }
