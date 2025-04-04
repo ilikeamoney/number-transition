@@ -55,13 +55,12 @@ public class TransferMain {
         String d5 = "0";
         String d6 = "1232142524";
 
-
-        System.out.println(h.TransferDigitToHex(d1));
-        System.out.println(h.TransferDigitToHex(d2));
-        System.out.println(h.TransferDigitToHex(d3));
-        System.out.println(h.TransferDigitToHex(d4));
-        System.out.println(h.TransferDigitToHex(d5));
-        System.out.println(h.TransferDigitToHex(d6));
+//        System.out.println(h.TransferDigitToHex(d1));
+//        System.out.println(h.TransferDigitToHex(d2));
+//        System.out.println(h.TransferDigitToHex(d3));
+//        System.out.println(h.TransferDigitToHex(d4));
+//        System.out.println(h.TransferDigitToHex(d5));
+//        System.out.println(h.TransferDigitToHex(d6));
 
     }
 }
