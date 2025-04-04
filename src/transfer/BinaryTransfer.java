@@ -3,6 +3,7 @@ package transfer;
 public class BinaryTransfer implements TransferBinary {
     @Override
     public String transferDigitToBinary(String digit) {
+
         return "";
     }
 
@@ -29,5 +30,24 @@ public class BinaryTransfer implements TransferBinary {
             }
         }
         return c;
+    }
+
+    // 4비트씩 자르기
+    public static String[] cutByteStr(String longBinary) {
+        StringBuilder sb = new StringBuilder();
+
+        // 바이너리 뒤에서 부터 자르기
+        int cnt = 0;
+        for (int i = longBinary.length() - 1; i >= 0; i--) {
+            sb.append(longBinary.charAt(i));
+            cnt += 1;
+
+            if (cnt == 4) {
+                sb.append(" ");
+                cnt = 0;
+            }
+        }
+
+        return String.valueOf(sb).split(" ");
     }
 }

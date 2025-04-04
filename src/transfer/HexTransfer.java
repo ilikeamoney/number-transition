@@ -10,6 +10,8 @@ public class HexTransfer implements TransferHex {
 
     private static final Map<Integer, String> HEX_MAP = new HashMap<>();
 
+    private static final DigitTransfer digitTransfer = new DigitTransfer();
+
     private HexTransfer() {
     }
 
@@ -25,58 +27,37 @@ public class HexTransfer implements TransferHex {
 
     @Override
     public String TransferDigitToHex(String digit) {
-        StringBuilder s = new StringBuilder();
-        boolean c = DigitTransfer.checkDigit(digit);
+        if (DigitTransfer.checkDigit(digit)) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(digitToHexOperator(digit));
 
-        if (c) {
-            int d = DigitTransfer.getDigitValue(digit);
-
-            // 입력이 0
-            if (d == 0) return String.valueOf(d);
-
-            while (d > 0) {
-                // 현재 d을 HEX 나눈 나머지 구하기.
-                int r = d % HEX;
-
-                String n = HEX_MAP.get(r);
-
-                if (n == null) {
-                    s.append(r);
-                } else {
-                    s.append(n);
-                }
-
-                d /= HEX;
+            // 사이즈가 1 이상이면
+            if (sb.length() > 1) {
+                return reverse(sb.toString());
             }
+
+            return sb.toString();
         }
 
-        // 사이즈가 1 이상이면
-        if (s.length() > 1) {
-            return reverse(s.toString());
-        }
-
-        return s.toString();
+        return "Current Value is not Digit Sorry try again";
     }
 
     @Override
     public String TransferBinaryToHex(String binary) {
-        StringBuilder sb = new StringBuilder();
-        boolean c = BinaryTransfer.checkBinary(binary);
+        if (BinaryTransfer.checkBinary(binary)) {
+            StringBuilder sb = new StringBuilder();
 
-        if (c) {
             // 길이가 4 이상
             if (binary.length() > 3) {
-                String[] bytes = cutByteStr(binary);
-
-                for (String b : bytes) {
-                    sb.append(exchangeHex(b));
+                for (String b : BinaryTransfer.cutByteStr(binary)) {
+                    sb.append(binaryToHexOperator(b));
                 }
-
                 return reverse(String.valueOf(sb));
             }
+            return binaryToHexOperator(binary);
         }
 
-        return exchangeHex(binary);
+        return "Current Value is not Binary Sorry try again";
     }
 
     @Override
@@ -90,33 +71,46 @@ public class HexTransfer implements TransferHex {
         return result.toString();
     }
 
-    // 4비트씩 자르기
-    private String[] cutByteStr(String longBinary) {
+    // Core
+    private String digitToHexOperator(String digit) {
         StringBuilder sb = new StringBuilder();
+        int d = DigitTransfer.stringDigitTORealValue(digit);
 
-        // 바이너리 뒤에서 부터 자르기
-        int cnt = 0;
-        for (int i = longBinary.length() - 1; i >= 0; i--) {
-            sb.append(longBinary.charAt(i));
-            cnt += 1;
+        // 입력이 0
+        if (d == 0) return String.valueOf(d);
 
-            if (cnt == 4) {
-                sb.append(" ");
-                cnt = 0;
+        while (d > 0) {
+            // 현재 d을 HEX 나눈 나머지 구하기.
+            int r = d % HEX;
+
+            String n = HEX_MAP.get(r);
+
+            if (n == null) {
+                sb.append(r);
+            } else {
+                sb.append(n);
             }
+
+            d /= HEX;
         }
 
-        return String.valueOf(sb).split(" ");
+        return String.valueOf(sb);
     }
 
-    private String exchangeHex(String binary) {
-        int r = 1;
-        int d = 0;
-        for (int i = 0; i < binary.length(); i++) {
-            d += (binary.charAt(i) - 48) * r;
-            r *= 2;
-        }
+    // Core
+    private String binaryToHexOperator(String binary) {
+//        2진수 10진수 변환 이 로직을 10진수 class 를 불러와 의존관계를 만들어야 함.
+//        메서드의 관계에서는 너무 의존 관계가 깊음
+//        int r = 1;
+//        int d = 0;
+//        for (int i = 0; i < binary.length(); i++) {
+//            d += (binary.charAt(i) - 48) * r;
+//            r *= 2;
+//        }
 
+        int d = DigitTransfer.stringDigitTORealValue(digitTransfer.TransferBinaryToDigit(binary));
+
+        // 10진수 16진수로 변환
         if (d >= 10) {
             return HEX_MAP.get(d);
         }
