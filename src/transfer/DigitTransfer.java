@@ -1,18 +1,32 @@
 package transfer;
 
+import java.util.Map;
+
 public class DigitTransfer implements TransferDigit {
+    private static DigitTransfer digitTransfer;
 
+    private DigitTransfer() {}
 
-    @Override
-    public String TransferHexToDigit(String hex) {
-        return "";
+    public static DigitTransfer getInstance() {
+        if (digitTransfer == null) {
+            return new DigitTransfer();
+        }
+        return digitTransfer;
     }
 
     @Override
-    public String TransferBinaryToDigit(String binary) {
+    public String transferHexToDigit(String hex) {
+        if (HexTransfer.checkHex(hex)) {
+            return hexToDigitOperator(reverse(hex));
+        }
+
+        return "Current Value is not Hex Sorry try again";
+    }
+
+    @Override
+    public String transferBinaryToDigit(String binary) {
         if (BinaryTransfer.checkBinary(binary)) {
-            int d = binaryToDigitOperator(binary);
-            return String.valueOf(d);
+            return binaryToDigitOperator(reverse(binary));
         }
 
         return "Current Value is not Binary Sorry try again";
@@ -21,15 +35,14 @@ public class DigitTransfer implements TransferDigit {
     @Override
     public String reverse(String n) {
         StringBuilder sb = new StringBuilder();
-
         for (int i = n.length() - 1; i >= 0; i--) {
             sb.append(n.charAt(i));
         }
-
         return sb.toString();
     }
 
-    private int binaryToDigitOperator(String binary) {
+    // Core
+    private String binaryToDigitOperator(String binary) {
         int r = 1;
         int d = 0;
         for (int i = 0; i < binary.length(); i++) {
@@ -37,7 +50,29 @@ public class DigitTransfer implements TransferDigit {
             r *= 2;
         }
 
-        return d;
+        return String.valueOf(d);
+    }
+
+    // Core
+    private String hexToDigitOperator(String hex) {
+        Map<String, Integer> hexMapReverse = HexTransfer.getHexMapReverse();
+        int r = 1;
+        int d = 0;
+
+        for (int i = 0; i < hex.length(); i++) {
+            Integer h = hexMapReverse.get(String.valueOf(hex.charAt(i)));
+
+            // h가 null이 아니면
+            if (h != null) {
+                d += h * r;
+            } else {
+                d += (hex.charAt(i) - 48) * r;
+            }
+
+            r *= 16;
+        }
+
+        return String.valueOf(d);
     }
 
     public static boolean checkDigit(String digit) {
@@ -57,7 +92,7 @@ public class DigitTransfer implements TransferDigit {
     }
 
 
-    public static int stringDigitTORealValue(String strDigit) {
+    public static int stringDigitToRealValue(String strDigit) {
         int d = 0;
 
         // 자릿수 1개

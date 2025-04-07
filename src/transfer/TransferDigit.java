@@ -1,6 +1,6 @@
 package transfer;
 
 public interface TransferDigit extends Transfer {
-    String TransferHexToDigit(String hex);
-    String TransferBinaryToDigit(String binary);
+    String transferHexToDigit(String hex);
+    String transferBinaryToDigit(String binary);
 }
